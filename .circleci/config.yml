@@ -1,38 +1,18 @@
-Version: 2.1
+# ~/.circleci/config.yml
+version: 2
 jobs:
-  build:
-    docker:
-      - image: circleci/<language>:<version TAG>
-    steps:
-      - checkout
-      - run: <command>
   test:
     docker:
       - image: circleci/<language>:<version TAG>
+    parallelism: 4
     steps:
-      - checkout
-      - run: <command>
+      - run:
+          command: |
+            echo $(circleci tests glob "foo/**/*" "bar/**/*")
+            circleci tests glob "foo/**/*" "bar/**/*" | xargs -n 1 echo
 workflows:
   version: 2
-  build_and_test:
+  my-workflow:
     jobs:
-      - build
-      - test
-      
-version: 2.1
-workflows:
-  version: 2
-  build-test-and-deploy:
-    jobs:
-      - build
-      - test1:
-          requires:
-            - build
-          context: bddsl-context  
-      - test2:
-          requires:
-            - test1
-          context: bddsl-context  
-      - deploy:
-          requires:
-            - test2
+      - run-tests:
+          context: org-global
