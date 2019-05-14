@@ -1,10 +1,38 @@
+Version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.4.1-jessie
+      - image: circleci/<language>:<version TAG>
     steps:
-      - run: |
-          bundle install
-          bundle exec rake db:schema:load
-          bundle exec rspec spec
-          bundle exec cucumber
+      - checkout
+      - run: <command>
+  test:
+    docker:
+      - image: circleci/<language>:<version TAG>
+    steps:
+      - checkout
+      - run: <command>
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
+      
+version: 2.1
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build
+      - test1:
+          requires:
+            - build
+          context: bddsl-context  
+      - test2:
+          requires:
+            - test1
+          context: bddsl-context  
+      - deploy:
+          requires:
+            - test2
