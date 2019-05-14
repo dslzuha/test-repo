@@ -10,3 +10,9 @@ jobs:
           command: |
             echo $(circleci tests glob "foo/**/*" "bar/**/*")
             circleci tests glob "foo/**/*" "bar/**/*" | xargs -n 1 echo
+workflows:
+  version: 2
+  my-workflow:
+    jobs:
+      - run-tests:
+          context: org-global
